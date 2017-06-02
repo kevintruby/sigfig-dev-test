@@ -18,7 +18,9 @@
     "angular": "^1.6.4",
     "body-parser": "^1.17.2",
     "bootstrap-sass": "^3.3.7",
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "jsonfile": "^3.0.0",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "browserify": "^14.4.0",
