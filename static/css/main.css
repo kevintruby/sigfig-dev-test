@@ -5817,6 +5817,10 @@ button.close {
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important; }
 
+.airportDataError {
+  margin-top: 15px;
+  margin-bottom: -20px; }
+
 .itinerary-results {
   margin-top: 50px; }
   .itinerary-results .glyphicon-refresh {

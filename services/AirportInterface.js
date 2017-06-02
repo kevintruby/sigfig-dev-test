@@ -23,7 +23,6 @@ class AirportInterface {
     static earliestItinerary(params = {}) {
         if(_.isEmpty(params))
             return [];
-        console.log(params);
         return [
             {
                 "flightNumber": 117,

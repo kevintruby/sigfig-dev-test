@@ -46,14 +46,19 @@
                                 <i class="glyphicon glyphicon-refresh gly-spin"></i>
                             </span>
                             </button>
+                            <div class="alert alert-danger airportDataError" ng-show="airportDataError">
+                                We're sorry, but we were unable to pre-load the airport data. Please enter the IATA code for your source and destination.
+                            </div>
                         </fieldset>
                     </form>
                 </div>
                 <div class="row itinerary-results" ng-cloak>
+                    <div class="alert alert-info" ng-show="isLoading && !airports.length">Loading airport data...</div>
                     <div class="well" ng-show="results.length || isLoading">
                         <div class="center-block text-center" ng-show="isLoading">
                             <i class="glyphicon glyphicon-refresh gly-spin"></i>
                         </div>
+                        <h3 ng-show="results.length">Itinerary Steps:</h3>
                         <ol ng-show="results.length">
                             <li ng-repeat="item in results">
                                 Board flight {{item.flightNumber}} to depart {{item.sourceAirport}} at {{item.departureTime}} and arrive at {{item.destinationAirport}} at {{item.arrivalTime}}.
