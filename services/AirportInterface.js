@@ -12,16 +12,18 @@ class AirportInterface {
     static allAirports() {
         let rsp = { airports: [] };
         let airports = jsonfile.readFileSync(path.join(__dirname, '../data/airports.json'));
-        rsp.airports = _.map(airports, (airport) => {
-            if(1 === airport.status)
-                return airport;
-        });
+        rsp.airports = _.reduce(airports, (results, airport) => {
+            if(1 === airport.status && 'airport' === airport.type && 'NA' === airport.continent && 'large' === airport.size)
+                results.push(airport);
+            return results
+        }, []);
         return rsp;
     }
 
     static earliestItinerary(params = {}) {
         if(_.isEmpty(params))
             return [];
+        console.log(params);
         return [
             {
                 "flightNumber": 117,
