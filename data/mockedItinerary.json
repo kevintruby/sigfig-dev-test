@@ -1,12 +1,5 @@
 [
   {
-    "flightNumber": 117,
-    "sourceAirport": "SFO",
-    "destinationAirport": "OAK",
-    "departureTime": "2017-01-25T22:17:05Z",
-    "arrivalTime": "2017-01-25T22:21:00Z"
-  },
-  {
     "flightNumber": 264,
     "sourceAirport": "SFO",
     "destinationAirport": "SEA",
@@ -33,19 +26,5 @@
     "destinationAirport": "IAD",
     "departureTime": "2017-01-26T07:45:00Z",
     "arrivalTime": "2017-01-26T09:12:00Z"
-  },
-  {
-    "flightNumber": 451,
-    "sourceAirport": "OAK",
-    "destinationAirport": "IAD",
-    "departureTime": "2017-01-26T04:01:00Z",
-    "arrivalTime": "2017-01-26T10:21:00Z"
-  },
-  {
-    "flightNumber": 453,
-    "sourceAirport": "SFO",
-    "destinationAirport": "IAD",
-    "departureTime": "2017-01-26T04:00:00Z",
-    "arrivalTime": "2017-01-26T10:24:00Z"
   }
 ]

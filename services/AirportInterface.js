@@ -108,7 +108,12 @@ class AirportInterface {
         return itinerary;
     }
 
-    static seedFlights() {
+    static seedFlights(use_mocked = false) {
+        if(use_mocked) {
+            let mocked_data = jsonfile.readFileSync(path.join(__dirname, '../data/mockedFlights.json'));
+            jsonfile.writeFileSync(path.join(__dirname, '../data/flights.json'), mocked_data, {spaces:2});
+            return;
+        }
         let available_airports = AirportInterface.allAirports();
         available_airports = available_airports.airports;
         let flights_per_airport = 15;
