@@ -10,6 +10,7 @@ angular
         $scope.airports = [];
 
         // loading status
+        $scope.isEmptyItinerary = false;
         $scope.isLoading = false;
         $scope.airportDataError = false;
 
@@ -30,6 +31,7 @@ angular
         };
 
         $scope.onSubmit = () => {
+            $scope.isEmptyItinerary = false;
             $scope.isLoading = true;
             $scope.results = [];
 
@@ -45,6 +47,10 @@ angular
             // @todo: this should probably come from a custom angular service, but I didn't have time to write one
             $http.post('/api/earliestItinerary', params).then((rsp) => {
                 $scope.results = rsp.data;
+                $scope.isEmptyItinerary = (!rsp.data.length);
+                $scope.isLoading = false;
+            }, (err) => {
+                console.log(err);
                 $scope.isLoading = false;
             });
         };

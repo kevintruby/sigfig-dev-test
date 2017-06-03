@@ -54,6 +54,7 @@
                 </div>
                 <div class="row itinerary-results" ng-cloak>
                     <div class="alert alert-info" ng-show="isLoading && !airports.length">Loading airport data...</div>
+                    <div class="alert alert-warning" ng-show="isEmptyItinerary">Sorry! Looks like there's no match for your selection.</div>
                     <div class="well" ng-show="results.length || isLoading">
                         <div class="center-block text-center" ng-show="isLoading">
                             <i class="glyphicon glyphicon-refresh gly-spin"></i>
