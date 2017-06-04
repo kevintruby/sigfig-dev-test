@@ -1,62 +1,61 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-let angular = require('angular');
-let uiBootstrap = require('angular-ui-bootstrap');
+'use strict';
 
-angular
-    .module('clientInterface', ['ui.bootstrap'])
-    .controller('interfaceCtrl', ($scope, $http) => {
-        // input models
-        $scope.origin = '';
-        $scope.destination = '';
-        $scope.airports = [];
+var angular = require('angular');
+var uiBootstrap = require('angular-ui-bootstrap');
 
-        // loading status
+angular.module('clientInterface', ['ui.bootstrap']).controller('interfaceCtrl', function ($scope, $http) {
+    // input models
+    $scope.origin = '';
+    $scope.destination = '';
+    $scope.airports = [];
+
+    // loading status
+    $scope.isEmptyItinerary = false;
+    $scope.isLoading = false;
+    $scope.airportDataError = false;
+
+    // results model
+    $scope.results = [];
+
+    // initialize typehead inputs via API results
+    $scope.onInit = function () {
+        $scope.isLoading = true;
+        $http.get('/api/availableAirports').then(function (rsp) {
+            $scope.airports = rsp.data.airports;
+            $scope.isLoading = false;
+        }, function (err) {
+            console.log(err);
+            $scope.airportDataError = true;
+            $scope.isLoading = false;
+        });
+    };
+
+    $scope.onSubmit = function () {
         $scope.isEmptyItinerary = false;
-        $scope.isLoading = false;
-        $scope.airportDataError = false;
-
-        // results model
+        $scope.isLoading = true;
         $scope.results = [];
 
-        // initialize typehead inputs via API results
-        $scope.onInit = () => {
-            $scope.isLoading = true;
-            $http.get('/api/availableAirports').then((rsp) => {
-                $scope.airports = rsp.data.airports;
-                $scope.isLoading = false;
-            }, (err) => {
-                console.log(err);
-                $scope.airportDataError = true;
-                $scope.isLoading = false;
-            });
+        // Allow standard input in case the typeahead didn't bind
+        var origin = angular.isObject($scope.origin) ? $scope.origin.iata : $scope.origin.toUpperCase();
+        var destination = angular.isObject($scope.destination) ? $scope.destination.iata : $scope.destination.toUpperCase();
+
+        var params = {
+            sourceAirport: origin,
+            destinationAirport: destination
         };
 
-        $scope.onSubmit = () => {
-            $scope.isEmptyItinerary = false;
-            $scope.isLoading = true;
-            $scope.results = [];
-
-            // Allow standard input in case the typeahead didn't bind
-            let origin = (angular.isObject($scope.origin)) ? $scope.origin.iata : $scope.origin.toUpperCase();
-            let destination = (angular.isObject($scope.destination)) ? $scope.destination.iata : $scope.destination.toUpperCase();
-
-            let params = {
-                sourceAirport: origin,
-                destinationAirport: destination
-            };
-
-            // @todo: this should probably come from a custom angular service, but I didn't have time to write one
-            $http.post('/api/earliestItinerary', params).then((rsp) => {
-                $scope.results = rsp.data;
-                $scope.isEmptyItinerary = (!rsp.data.length);
-                $scope.isLoading = false;
-            }, (err) => {
-                console.log(err);
-                $scope.isLoading = false;
-            });
-        };
-    });
-
+        // @todo: this should probably come from a custom angular service, but I didn't have time to write one
+        $http.post('/api/earliestItinerary', params).then(function (rsp) {
+            $scope.results = rsp.data;
+            $scope.isEmptyItinerary = !rsp.data.length;
+            $scope.isLoading = false;
+        }, function (err) {
+            console.log(err);
+            $scope.isLoading = false;
+        });
+    };
+});
 
 },{"angular":5,"angular-ui-bootstrap":3}],2:[function(require,module,exports){
 /*

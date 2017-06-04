@@ -134,6 +134,7 @@ class AirportInterface {
             if(1 === full_paths.length)
                 itinerary = full_paths[0];
             else {
+                // @todo: employ a sort here, preferably binary
                 let earliest_arrival = null;
                 let index = 0;
                 for(let path in full_paths) {
