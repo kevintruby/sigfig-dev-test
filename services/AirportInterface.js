@@ -134,21 +134,14 @@ class AirportInterface {
             if(1 === full_paths.length)
                 itinerary = full_paths[0];
             else {
-                // @todo: employ a sort here, preferably binary
-                let earliest_arrival = null;
-                let index = 0;
-                for(let path in full_paths) {
-                    let arrival = new Date(_.last(full_paths[path]).arrivalTime);
-                    if(null === earliest_arrival) {
-                        earliest_arrival = arrival;
-                        index = path;
-                    }
-                    else if(arrival < earliest_arrival) {
-                            earliest_arrival = arrival;
-                            index = path;
-                    }
-                }
-                itinerary = full_paths[index];
+                full_paths.sort((a, b) => {
+                    let temp_a = new Date(_.last(a).arrivalTime);
+                    let temp_b = new Date(_.last(b).arrivalTime);
+                    if(temp_a < temp_b) return -1;
+                    if(temp_a > temp_b) return 1;
+                    return 0;
+                });
+                itinerary = full_paths[0];
             }
         }
 
