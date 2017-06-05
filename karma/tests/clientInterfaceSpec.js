@@ -1,5 +1,5 @@
 describe('ngApp clientInterface', () => {
-    let apiService, $httpBackend, $q, earliestItinerary, $scope, $controller, deferred;
+    let $controller, $httpBackend, $q, $scope, apiService, availableAirports, deferred;
     let mocked_airports = readJSON('data/mockedAirports.json');
     let mocked_itinerary = readJSON('data/mockedItinerary.json');
 
@@ -14,7 +14,8 @@ describe('ngApp clientInterface', () => {
 
         $controller = _$controller_;
 
-        earliestItinerary = $httpBackend.whenPOST('/api/earliestItinerary').respond((method, url, data, headers, params) => {
+        availableAirports = $httpBackend.whenGET('/api/availableAirports').respond(mocked_airports);
+        $httpBackend.whenPOST('/api/earliestItinerary').respond((method, url, data, headers, params) => {
             try {
                 data = JSON.parse(data);
             }
@@ -29,6 +30,68 @@ describe('ngApp clientInterface', () => {
             return [ 200, [] ];
         });
     }));
+
+    describe('$scope.onInit()', () => {
+        let controller;
+
+        beforeEach(() => {
+            controller = $controller('interfaceCtrl', { $scope, apiService });
+        });
+
+        it('should update the $scope.isLoading value during the ng-init process, reverting upon completion', () => {
+            expect($scope.isLoading).toBe(false);
+
+            // trigger init process
+            $scope.onInit();
+            expect($scope.isLoading).toBe(true);
+
+            // flush the $http call handled by apiService
+            $httpBackend.flush();
+
+            expect($scope.isLoading).toBe(false);
+        });
+
+        it('should retain the $scope.airportDataError value during the ng-init process', () => {
+            expect($scope.airportDataError).toBe(false);
+
+            // trigger init process
+            $scope.onInit();
+
+            // flush the $http call handled by apiService
+            $httpBackend.flush();
+
+            expect($scope.airportDataError).toBe(false);
+        });
+
+        it('should update the $scope.airportDataError value during the ng-init process upon server-side error', () => {
+            expect($scope.airportDataError).toBe(false);
+
+            // trigger init process
+            $scope.onInit();
+
+            availableAirports.respond(500, '');
+
+            // flush the $http call handled by apiService
+            $httpBackend.flush();
+
+            expect($scope.airportDataError).toBe(true);
+        });
+
+        it('should update the $scope.isLoading value during the ng-init process, reverting upon completion with server-side error', () => {
+            expect($scope.isLoading).toBe(false);
+
+            // trigger init process
+            $scope.onInit();
+            expect($scope.isLoading).toBe(true);
+
+            availableAirports.respond(500, '');
+
+            // flush the $http call handled by apiService
+            $httpBackend.flush();
+
+            expect($scope.isLoading).toBe(false);
+        });
+    });
 
     describe('$scope.onSubmit()', () => {
         let controller;
@@ -107,8 +170,8 @@ describe('ngApp clientInterface', () => {
         it('should have a populated array for $scope.results if sourceAirport/destinationAirport parameters are valid airport objects returned by ui-typeahead', () => {
             expect($scope.results).toEqual([]);
 
-            $scope.origin = mocked_airports[0];         // SFO
-            $scope.destination = mocked_airports[1];    // IAD
+            $scope.origin = mocked_airports.airports[0];        // SFO
+            $scope.destination = mocked_airports.airports[1];   // IAD
             $scope.$apply();
 
             // trigger submit
