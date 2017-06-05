@@ -1,9 +1,9 @@
 let angular = require('angular');
-let uiBootstrap = require('angular-ui-bootstrap');
+require('angular-ui-bootstrap');
 
 angular
     .module('clientInterface', ['ui.bootstrap'])
-    .controller('interfaceCtrl', ($scope, $http) => {
+    .controller('interfaceCtrl', ($scope, $http, apiService) => {
         // input models
         $scope.origin = '';
         $scope.destination = '';
@@ -17,17 +17,14 @@ angular
         // results model
         $scope.results = [];
 
-        // initialize typehead inputs via API results
+        // initialize typeahead inputs via API results
         $scope.onInit = () => {
             $scope.isLoading = true;
-            $http.get('/api/availableAirports').then((rsp) => {
-                $scope.airports = rsp.data.airports;
-                $scope.isLoading = false;
+            apiService.availableAirports().then((data) => {
+                $scope.airports = data.airports;
             }, (err) => {
-                console.log(err);
                 $scope.airportDataError = true;
-                $scope.isLoading = false;
-            });
+            }).finally(() => { $scope.isLoading = false; });
         };
 
         $scope.onSubmit = () => {
@@ -36,23 +33,39 @@ angular
             $scope.results = [];
 
             // Allow standard input in case the typeahead didn't bind
-            let origin = (angular.isObject($scope.origin)) ? $scope.origin.iata : $scope.origin.toUpperCase();
-            let destination = (angular.isObject($scope.destination)) ? $scope.destination.iata : $scope.destination.toUpperCase();
-
             let params = {
-                sourceAirport: origin,
-                destinationAirport: destination
+                sourceAirport: (angular.isObject($scope.origin)) ? $scope.origin.iata : $scope.origin.toUpperCase(),
+                destinationAirport: (angular.isObject($scope.destination)) ? $scope.destination.iata : $scope.destination.toUpperCase()
             };
 
-            // @todo: this should probably come from a custom angular service, but I didn't have time to write one
-            $http.post('/api/earliestItinerary', params).then((rsp) => {
-                $scope.results = rsp.data;
-                $scope.isEmptyItinerary = (!rsp.data.length);
-                $scope.isLoading = false;
+            apiService.earliestItinerary(params).then((data) => {
+                $scope.results = data;
+                $scope.isEmptyItinerary = (!data.length);
+            }).finally(() => { $scope.isLoading = false; });
+        };
+    }).service('apiService', function ($http, $q) {
+        let base_url = '/api';
+
+        this.availableAirports = () => {
+            let deferred = $q.defer();
+            $http.get(`${base_url}/availableAirports`).then((rsp) => {
+                deferred.resolve(rsp.data);
             }, (err) => {
                 console.log(err);
-                $scope.isLoading = false;
+                deferred.reject(err);
             });
+            return deferred.promise;
+        };
+
+        this.earliestItinerary = (params) => {
+            let deferred = $q.defer();
+            $http.post(`${base_url}/earliestItinerary`, params).then((rsp) => {
+                deferred.resolve(rsp.data);
+            }, (err) => {
+                console.log(err);
+                deferred.reject(err);
+            });
+            return deferred.promise;
         };
     });
 

@@ -8,7 +8,7 @@
     "build-css": "node-sass sass/main.scss static/css/main.css",
     "watch-css": "nodemon -e scss -x \"npm run build-css\"",
     "build-js": "./node_modules/.bin/browserify client/*.js -o static/js/bundle.js -t [ babelify --presets [ es2015 ] ]",
-    "watch-js": "./node_modules/.bin/watchify client/* -t [ babelify --presets [ es2015 ] ] -o static/js/bundle.js",
+    "watch-js": "./node_modules/.bin/watchify client/*.js -t [ babelify --presets [ es2015 ] ] -o static/js/bundle.js",
     "start": "node app.js",
     "start:dev": "nodemon app.js"
   },
