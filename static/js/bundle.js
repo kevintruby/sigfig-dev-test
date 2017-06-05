@@ -4,7 +4,7 @@
 var angular = require('angular');
 require('angular-ui-bootstrap');
 
-angular.module('clientInterface', ['ui.bootstrap']).controller('interfaceCtrl', function ($scope, $http, apiService) {
+angular.module('clientInterface', ['ui.bootstrap']).controller('interfaceCtrl', function ($scope, apiService) {
     // input models
     $scope.origin = '';
     $scope.destination = '';
@@ -25,7 +25,7 @@ angular.module('clientInterface', ['ui.bootstrap']).controller('interfaceCtrl', 
             $scope.airports = data.airports;
         }, function (err) {
             $scope.airportDataError = true;
-        }).finally(function () {
+        }).catch(function () {}).finally(function () {
             $scope.isLoading = false;
         });
     };
@@ -44,7 +44,7 @@ angular.module('clientInterface', ['ui.bootstrap']).controller('interfaceCtrl', 
         apiService.earliestItinerary(params).then(function (data) {
             $scope.results = data;
             $scope.isEmptyItinerary = !data.length;
-        }).finally(function () {
+        }).catch(function () {}).finally(function () {
             $scope.isLoading = false;
         });
     };

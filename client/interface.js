@@ -3,7 +3,7 @@ require('angular-ui-bootstrap');
 
 angular
     .module('clientInterface', ['ui.bootstrap'])
-    .controller('interfaceCtrl', ($scope, $http, apiService) => {
+    .controller('interfaceCtrl', ($scope, apiService) => {
         // input models
         $scope.origin = '';
         $scope.destination = '';
@@ -24,7 +24,7 @@ angular
                 $scope.airports = data.airports;
             }, (err) => {
                 $scope.airportDataError = true;
-            }).finally(() => { $scope.isLoading = false; });
+            }).catch(() => {}).finally(() => { $scope.isLoading = false; });
         };
 
         $scope.onSubmit = () => {
@@ -41,7 +41,7 @@ angular
             apiService.earliestItinerary(params).then((data) => {
                 $scope.results = data;
                 $scope.isEmptyItinerary = (!data.length);
-            }).finally(() => { $scope.isLoading = false; });
+            }).catch(() => {}).finally(() => { $scope.isLoading = false; });
         };
     }).service('apiService', function ($http, $q) {
         let base_url = '/api';

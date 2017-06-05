@@ -17,7 +17,11 @@ module.exports = function(config) {
     files: [
       'static/js/bundle.js',
       'node_modules/angular-mocks/angular-mocks.js',
-      'spec/*.js'
+      'node_modules/karma-read-json/karma-read-json.js',
+      'spec/*.js',
+
+      // fixtures
+      { pattern: 'data/mocked*.json', watched: true, served: true, included: false }
     ],
 
 
