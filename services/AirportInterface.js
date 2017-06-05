@@ -11,7 +11,11 @@ class AirportInterface {
 
 
     /**
-     * @TODO: PROVIDE DESCRIPTION
+     * Reads stored JSON file for available airports.
+     *
+     * Currently restricted to active, large airports in the US.
+     *
+     * Void method
      *
      * @returns {{airports: Array}}
      */
@@ -29,11 +33,11 @@ class AirportInterface {
 
 
     /**
-     * @TODO: PROVIDE DESCRIPTION
+     * Parses available flight data for all first-hop connections to a given source airport
      *
-     * @param airport {string}
-     * @param flight_data {Array}
-     * @returns {Array}
+     * @param airport {string} -- IATA code of origin airport
+     * @param flight_data {Array} -- array of known "future" flights
+     * @returns {Array} -- array of possible first-hop connections, or empty array if none available
      */
 
     static connectingFlights(airport = '', flight_data = []) {
@@ -56,12 +60,12 @@ class AirportInterface {
 
 
     /**
-     * @TODO: PROVIDE DESCRIPTION
+     * Recursively crawls the available flight data to find full-path connections
      *
-     * @param flight_data {Array}
-     * @param progress {Array}
-     * @param destination {string}
-     * @returns {false|Array}
+     * @param flight_data {Array} -- array of known "future" flights
+     * @param progress {Array} -- current recursive progress
+     * @param destination {string} -- IATA code of destination airport
+     * @returns {false|Array} -- array of full path if found, else false
      */
 
     static crawlConnections(flight_data = [], progress = [], destination = '') {
@@ -84,7 +88,7 @@ class AirportInterface {
             minimum_departure_datetime.setMinutes(arrival_datetime.getMinutes() + 20);
             let departure_datetime = new Date(flight.departureTime);
 
-            let progress_clone = _.map(progress, _.clone);
+            let progress_clone = _.cloneDeep(progress);
 
             if(departure_datetime >= minimum_departure_datetime) {
                 progress_clone.push(flight);
