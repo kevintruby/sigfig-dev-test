@@ -1,5 +1,6 @@
 describe('ngApp clientInterface', () => {
     let apiService, $httpBackend, $q, earliestItinerary, $scope, $controller, deferred;
+    let mocked_airports = readJSON('data/mockedAirports.json');
     let mocked_itinerary = readJSON('data/mockedItinerary.json');
 
     beforeEach(module('clientInterface'));
@@ -21,7 +22,8 @@ describe('ngApp clientInterface', () => {
                 return [ 500, [] ]
             }
 
-            if(data.sourceAirport && data.destinationAirport) {
+            // assume only return valid mocked route for SFO -> IAD
+            if(data.sourceAirport && data.destinationAirport && 'SFO' === data.sourceAirport && 'IAD' === data.destinationAirport) {
                 return [ 200, mocked_itinerary ];
             }
             return [ 200, [] ];
@@ -85,10 +87,9 @@ describe('ngApp clientInterface', () => {
             expect($scope.results).toEqual([]);
         });
 
-        it('should have a populated array for $scope.results if sourceAirport/destinationAirport parameters are valid', () => {
+        it('should have a populated array for $scope.results if sourceAirport/destinationAirport parameters are valid simple values', () => {
             expect($scope.results).toEqual([]);
 
-            // set two valid basic parameter -- a secondary test will assert typeahead airport objects
             $scope.origin = 'SFO';
             $scope.destination = 'IAD';
             $scope.$apply();
@@ -101,6 +102,53 @@ describe('ngApp clientInterface', () => {
             $httpBackend.flush();
 
             expect($scope.results).toEqual(mocked_itinerary);
+        });
+
+        it('should have a populated array for $scope.results if sourceAirport/destinationAirport parameters are valid airport objects returned by ui-typeahead', () => {
+            expect($scope.results).toEqual([]);
+
+            $scope.origin = mocked_airports[0];         // SFO
+            $scope.destination = mocked_airports[1];    // IAD
+            $scope.$apply();
+
+            // trigger submit
+            $scope.onSubmit();
+            expect($scope.isLoading).toBe(true);
+
+            // flush the $http call handled by apiService
+            $httpBackend.flush();
+
+            expect($scope.results).toEqual(mocked_itinerary);
+        });
+
+        it('should set $scope.isEmptyItinerary value to true upon completion of form submission if invalid parameters', () => {
+            expect($scope.isEmptyItinerary).toBe(false);
+
+            // trigger submit
+            $scope.onSubmit();
+            expect($scope.isEmptyItinerary).toBe(false);
+
+            // flush the $http call handled by apiService
+            $httpBackend.flush();
+
+            expect($scope.isEmptyItinerary).toBe(true);
+        });
+
+        it('should set $scope.isEmptyItinerary value to true upon completion of form submission if no route found', () => {
+            expect($scope.isEmptyItinerary).toBe(false);
+
+            $scope.origin = 'IAD';
+            $scope.destination = 'SFO';
+            $scope.$apply();
+
+            // trigger submit
+            $scope.onSubmit();
+            expect($scope.isEmptyItinerary).toBe(false);
+
+            // flush the $http call handled by apiService
+            $httpBackend.flush();
+
+            expect($scope.isEmptyItinerary).toBe(true);
         });
     });
 });
