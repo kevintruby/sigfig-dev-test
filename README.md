@@ -6,9 +6,9 @@ I chose to use Node.js with Express for my back-end, coupled with Jasmine.js for
 
 The back-end listens for predefined API route calls, and serves the single-page AngularJS application for all other traffic. The front-end provides an interface for specifying a source and destination, with some typeahead suggestion functionality. The JSON data for suggestions was provided by [https://github.com/jbrooksuk/JSON-Airports].
 
-I tried to build a seeder for test data, but had issues generating properly-spaced flight options that could be connected from one destination to another. In the end, I extended the mocked data to add some additional complexity. This is explained in more detail in the Jasmine tests, via the `/spec` directory.
+I built a seeder for test data that attempts to calculate real-world travel times based on distance and average cruising velocity. For the unit tests, I extended the mocked data to add some additional complexity. This is explained in more detail in the Jasmine tests, via the `/spec` directory.
 
-To be completely honest, I am not very experience building unit tests. I did the best I could, and am not altogether certain that the API set is running as expected -- they seem to exectute extremely fast. I am more confident of the unit tests for the interface class that is invoked by the API handlers, however, after mocking some expected cases for use by the unit tests.
+To be completely honest, I am not very experience building unit tests. I did the best I could, and am not altogether certain that the API set is running as expected -- they seem to exectute extremely fast. I am more confident of the unit tests for the interface class that is invoked by the API handlers, however, after mocking some expected cases for use by the unit tests. There are front-end tests via Karma for the $scope controller methods, but not for the abstracted apiService as it only returns promises.
 
 ## Asymptotic Runtime and Memory Complexity
 
