@@ -169,7 +169,7 @@ class AirportInterface {
         console.log('seeding flight data...');
         let available_airports = AirportInterface.allAirports();
         available_airports = available_airports.airports;
-        let flights_per_airport = 15;
+        let flights_per_airport = 10;
         let existing_flight_numbers = [];
         let seed_data = [];
 
