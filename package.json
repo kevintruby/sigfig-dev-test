@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "./node_modules/.bin/jasmine",
+    "karma": "./node_modules/.bin/karma start karma.conf.js",
     "build-css": "node-sass sass/main.scss static/css/main.css",
     "watch-css": "nodemon -e scss -x \"npm run build-css\"",
     "build-js": "./node_modules/.bin/browserify client/*.js -o static/js/bundle.js -t [ babelify --presets [ es2015 ] ]",
