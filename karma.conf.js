@@ -18,7 +18,7 @@ module.exports = function(config) {
       'static/js/bundle.js',
       'node_modules/angular-mocks/angular-mocks.js',
       'node_modules/karma-read-json/karma-read-json.js',
-      'spec/*.js',
+      'karma/tests/*.js',
 
       // fixtures
       { pattern: 'data/mocked*.json', watched: true, served: true, included: false }
@@ -26,10 +26,7 @@ module.exports = function(config) {
 
 
     // list of files to exclude
-    exclude: [
-        'spec/airportInterfaceSpec.js',
-        'spec/apiSpec.js'
-    ],
+    exclude: [],
 
 
     // preprocess matching files before serving them to the browser
